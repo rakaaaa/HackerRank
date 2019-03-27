@@ -10,7 +10,7 @@ public class Solution {
 
     // Complete the bfs function below.
      static int[] bfs(int n, int m, int[][] edges, int s) {
-        int[] result = new int[n+1];    
+     int[] result = new int[n+1];    
         
     for (int i = 1; i < n+1; i++) {
         if(i != s)
@@ -25,11 +25,14 @@ public class Solution {
         int track = queue.poll();
         for (int i = 0; i < m; i++) {
             if(edges[i][0] == track){
-                queue.add(edges[i][1]);
-                if(track == s && result[edges[i][1]] == -1)
+                
+                if(track == s && result[edges[i][1]] == -1){
                     result[edges[i][1]] =  6;
-                else if(result[edges[i][1]] == -1)
+                    queue.add(edges[i][1]);
+                }else if(result[edges[i][1]] == -1 || (result[edges[i][0]] >=6 && result[edges[i][0]] + 6 < result[edges[i][0]])){
                     result[edges[i][1]] = result[edges[i][0]] + 6;
+                    queue.add(edges[i][1]);
+                }
             }
         }
         
@@ -59,17 +62,27 @@ public class Solution {
 
             int n = Integer.parseInt(nm[0]);
 
-            int m = Integer.parseInt(nm[1]);
+            int m = Integer.parseInt(nm[1])* 2;
 
             int[][] edges = new int[m][2];
 
             for (int i = 0; i < m; i++) {
                 String[] edgesRowItems = scanner.nextLine().split(" ");
                 scanner.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
-
                 for (int j = 0; j < 2; j++) {
                     int edgesItem = Integer.parseInt(edgesRowItems[j]);
                     edges[i][j] = edgesItem;
+                }
+                i++;
+                for (int j = 0; j < 2; j++) {
+                    if(j==0){
+                        int edgesItem = Integer.parseInt(edgesRowItems[0]);
+                        edges[i][1] = edgesItem;
+                    }
+                    if(j==1){
+                        int edgesItem = Integer.parseInt(edgesRowItems[1]);
+                        edges[i][0] = edgesItem;
+                    }
                 }
             }
 
