@@ -1,0 +1,95 @@
+    public class Edge implements Comparable<Edge>{
+    int v, w;
+    double weight;
+    public Edge(int v, int w, double weight){
+        if(v < 0) throw new IllegalArgumentException("vertex index must be a nonnegative integer");
+        if(w < 0) throw new IllegalArgumentException("vertex index must be a nonnegative integer");
+        if(Double.isNaN(weight)) throw new IllegalArgumentException("Weight is NaN");
+        this.v = v;
+        this.w = w;
+        this.weight = weight;
+    }
+    
+    public double weight(){
+        return weight;
+    }
+    
+    public int either(){
+        return v;
+    }
+    
+    public int other(int vertex){
+        if(vertex == v) return w;
+        else if(vertex == w) return v;
+        else throw new IllegalArgumentException("Illegal endpoint");
+    }
+
+    @Override
+    public int compareTo(Edge that){
+        return Double.compare(this.weight, that.weight);
+    }
+}
+
+public int findParent(int[] parent, int node){
+    if(parent[node] != node)
+        return findParent(parent, parent[node]);
+    return node;
+}
+public class Node{
+    int id;
+    List<Node> adj;
+    int distance = 0;
+    public Node(int id){
+        this.id = id;
+        this.adj = new LinkedList<>();                    
+    }
+    
+    public void addAdjNode(Node adj){
+        this.adj.add(adj);
+    }
+}
+
+public class EdgeWeightedGraph{
+    public EdgeWeightedGraph(){
+        
+    }
+}
+
+public int kruskals(int gNodes, List<Integer> gFrom, List<Integer> gTo, List<Integer> gWeight){
+    List<Edge> edges = new ArrayList<Edge>();
+    Map<Integer, Integer> mapSourceIndex = new HashMap<Integer, Integer>();
+    for (int i = 0; i < gNodes; i++) {
+        if(gFrom.get(i) != gTo.get(i))    
+            if(mapSourceIndex != null && mapSourceIndex.containsKey(gFrom.get(i))){
+                int previousIndex = mapSourceIndex.get(gFrom.get(i));
+                //if(gTo.get(previousIndex) != gTo.get(i) && gWeight.get(i) < gWeight.get(previousIndex)){
+                    edges.add( new Edge(gFrom.get(i),gTo.get(i), gWeight.get(i)));
+                    mapSourceIndex.put(gFrom.get(i), i);
+                //}
+            }else{
+                edges.add(new Edge(gFrom.get(i),gTo.get(i), gWeight.get(i)));
+                mapSourceIndex.put(gFrom.get(i), i);
+            }
+    }
+    
+    
+    Collections.sort(edges);    
+    int[] parent = new int[gNodes];
+    for (int i = 0; i < gNodes; i++) {
+        parent[i] = i;
+    }
+    int output = 0;
+    for (int i = 0; i < edges.size(); i++) {
+        Edge edge = edges.get(i);
+        int x = findParent(parent, edge.v);
+        int y = findParent(parent, edge.w);
+        
+        if(x != y){
+            output+=edge.weight;
+            parent[y] = x;
+        }
+        
+    }
+    
+    return output;
+}
